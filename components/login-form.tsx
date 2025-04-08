@@ -45,7 +45,7 @@ export default function LoginForm() {
             <Ticket className="h-12 w-12 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">Ticket App</CardTitle>
-          <CardDescription>Entre para acessar seus ingressos para shows</CardDescription>
+          <CardDescription>Entre para acessar seus ingressos</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -54,7 +54,7 @@ export default function LoginForm() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -70,7 +70,7 @@ export default function LoginForm() {
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Entrando..." : "Entrar"}
-            </Button>
+            </Button> */}
             <div>
             <button
               type="button"
@@ -78,14 +78,14 @@ export default function LoginForm() {
               className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <FcGoogle className="h-5 w-5" />
-              Sign in with Google
+              Entrar com Google
             </button>
           </div>
           </form>
         </CardContent>
-        <CardFooter className="text-center text-sm text-muted-foreground">
+        {/* <CardFooter className="text-center text-sm text-muted-foreground">
           <p className="w-full">Para teste, use: teste@exemplo.com / senha123</p>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
     </div>
   )
