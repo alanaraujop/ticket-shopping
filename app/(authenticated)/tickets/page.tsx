@@ -16,8 +16,8 @@ export default function TicketsPage() {
   useEffect(() => {
     const loadTickets = async () => {
       try {
-        if (!user) return
-        const userTickets = await getUserTickets(user.id)
+        if (!user?.email) return
+        const userTickets = await getUserTickets(user.email)
         setTickets(userTickets)
       } catch (error) {
         console.error("Erro ao carregar ingressos:", error)

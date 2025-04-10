@@ -27,14 +27,15 @@ export type Ticket = {
 // Update the functions to use Supabase
 import { supabase } from './supabase'
 
-export async function getUserTickets(userId: string) {
+// Update the getUserTickets function to use email
+export async function getUserTickets(userEmail: string) {
   const { data, error } = await supabase
     .from('tickets')
     .select(`
       *,
       event:events(*)
     `)
-    .eq('user_id', userId)
+    .eq('user_email', userEmail)
   
   if (error) throw error
   return data
