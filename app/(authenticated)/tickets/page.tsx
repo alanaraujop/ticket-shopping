@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { getUserTickets, type Ticket } from "@/lib/data"
+import { type Ticket } from "@/lib/data"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { formatDate } from "@/lib/utils"
 import { useAuth } from "@/components/auth-provider"
+import { getUserTickets } from '@/app/actions/tickets'
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>([])
@@ -78,8 +79,8 @@ export default function TicketsPage() {
                   <p className="text-sm mt-1">{ticket.event?.venue}</p>
                 </CardContent>
                 <CardFooter className="p-4 pt-0 flex justify-between">
-                  <span className="text-sm font-medium">{ticket.section}</span>
-                  <span className="text-sm font-bold">R$ {ticket.price.toFixed(2)}</span>
+                  <span className="text-sm font-medium">{ticket.ticket_type?.name}</span>
+                  <span className="text-sm font-bold">R$ {ticket.ticket_type?.price.toFixed(2)}</span>
                 </CardFooter>
               </Card>
             </Link>

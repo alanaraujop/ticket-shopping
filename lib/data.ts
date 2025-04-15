@@ -5,6 +5,18 @@ export type Event = {
   time: string
   venue: string
   image_url: string | null
+  instagram_url: string | null
+  youtube_url: string | null
+  facebook_url: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type TicketType = {
+  id: string
+  event_id: string
+  name: string
+  price: number
   created_at: string
   updated_at: string
 }
@@ -12,16 +24,14 @@ export type Event = {
 export type Ticket = {
   id: string
   event_id: string
-  user_id: string
-  section: string
-  row: string | null
+  user_email: string
+  ticket_type_id: string
   seat: string | null
-  price: number
   status: 'available' | 'sold' | 'reserved'
   created_at: string
   updated_at: string
-  // Include event details when needed
   event?: Event
+  ticket_type?: TicketType
 }
 
 // Update the functions to use Supabase

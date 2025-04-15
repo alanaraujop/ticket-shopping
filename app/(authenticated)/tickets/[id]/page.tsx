@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { getTicketById, type Ticket } from "@/lib/data"
+import { type Ticket } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatDate } from "@/lib/utils"
 import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react"
 import QRCode from "react-qr-code"
+import { getTicketById } from "@/app/actions/tickets"
 
 export default function TicketDetailsPage({ params }: { params: { id: string } }) {
   const [ticket, setTicket] = useState<Ticket | null>(null)
@@ -101,14 +102,8 @@ export default function TicketDetailsPage({ params }: { params: { id: string } }
             <div className="grid grid-cols-3 gap-4 mt-6 text-sm">
               <div>
                 <p className="text-muted-foreground">Setor</p>
-                <p className="font-medium">{ticket.section}</p>
+                <p className="font-medium">{ticket.ticket_type?.name}</p>
               </div>
-
-              <div>
-                <p className="text-muted-foreground">Fileira</p>
-                <p className="font-medium">{ticket.row}</p>
-              </div>
-
               <div>
                 <p className="text-muted-foreground">Assento</p>
                 <p className="font-medium">{ticket.seat}</p>
