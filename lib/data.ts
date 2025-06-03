@@ -34,6 +34,13 @@ export type Ticket = {
   ticket_type?: TicketType
 }
 
+export type User = {
+  id: string
+  email: string
+  name: string
+  profile: 'admin' | 'user'
+}
+
 // Update the functions to use Supabase
 import { supabase } from './supabase'
 

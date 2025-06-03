@@ -5,12 +5,7 @@ import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { supabase } from '../lib/supabase'
-
-type User = {
-  id: string
-  name: string
-  email: string
-}
+import { User } from "@/lib/data"
 
 // Update AuthContextType to include loginWithGoogle
 type AuthContextType = {
@@ -29,6 +24,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
 
+  useEffect( function () {
+    supabase.auth.updateUser({
+      data: {
+        profile: 'admin'
+    }}).then(({ data, error }) => {
+      // Trate os dados retornados ou erros aqui
+      if (error) {
+        console.error('Erro ao atualizar metadados:', error)
+      } else {
+        console.log('Metadados atualizados com sucesso:', data)
+      }
+    })
+  }, [])
+
   useEffect(() => {
     // Check for Supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,12 +46,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: session.user.id,
           name: session.user.user_metadata.full_name || session.user.email,
           email: session.user.email!,
+          profile: session.user.user_metadata.profile || 'user'
         }
         setUser(userData)
         localStorage.setItem("user", JSON.stringify(userData))
-        if (pathname === '/login' || pathname === '/') {
-          router.push('/tickets')
-        }
       }
       setIsLoading(false)
     })
@@ -54,6 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: session.user.id,
           name: session.user.user_metadata.full_name || session.user.email,
           email: session.user.email!,
+          profile: session.user.user_metadata.profile || 'user'
         }
         setUser(userData)
         localStorage.setItem("user", JSON.stringify(userData))
@@ -92,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: data.user.id,
           name: data.user.user_metadata.full_name || data.user.email,
           email: data.user.email!,
+          profile: data.user.user_metadata.profile || 'user'
         }
         setUser(userData)
         localStorage.setItem("user", JSON.stringify(userData))
