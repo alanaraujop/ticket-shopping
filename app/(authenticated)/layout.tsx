@@ -24,11 +24,13 @@ export default function AuthenticatedLayout({
     }
   }, [user, isLoading, router])
 
-  // Não renderizar nada no servidor ou durante a hidratação inicial
+  // Não renderizar nada até que o componente seja montado no cliente
+  // Isso evita problemas de hidratação
   if (!mounted) {
-    return null
+    return <div className="min-h-screen"></div> // Placeholder vazio com altura mínima
   }
 
+  // Mostrar um indicador de carregamento quando estiver carregando
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -37,10 +39,12 @@ export default function AuthenticatedLayout({
     )
   }
 
+  // Redirecionar para login se não estiver autenticado
   if (!user) {
-    return null
+    return <div className="min-h-screen"></div> // Placeholder vazio com altura mínima
   }
 
+  // Renderizar o layout completo quando autenticado
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
