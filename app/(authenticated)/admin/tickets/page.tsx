@@ -13,6 +13,13 @@ import { Event, Ticket, TicketType, User } from "@/lib/data"
 import { createTickets, assignTicketToUser, getEventTickets, getTicketStats, updateTicketStatus } from "@/app/actions/admin-tickets"
 import { getUsers, getEvents } from "@/app/actions/admin-users"
 
+const initialTicket = {
+        event_id: '',
+        ticket_type_id: '',
+        quantity: 1,
+        status: 'available' as 'available' | 'sold' | 'reserved'
+}
+
 export default function AdminTicketsPage() {
   // Estado para controlar a montagem do componente no cliente
   const [mounted, setMounted] = useState(false)
@@ -29,12 +36,7 @@ export default function AdminTicketsPage() {
     reserved: 0
   })
   
-  const [newTicketData, setNewTicketData] = useState({
-    event_id: '',
-    ticket_type_id: '',
-    quantity: 1,
-    status: 'available' as 'available' | 'sold' | 'reserved'
-  })
+  const [newTicketData, setNewTicketData] = useState(initialTicket)
 
   const [assignTicketData, setAssignTicketData] = useState({
     ticket_id: '',
@@ -131,7 +133,8 @@ export default function AdminTicketsPage() {
       if (!result.success) throw result.error
       
       alert(`${quantity} ingressos criados com sucesso!`)
-    //   loadTickets()
+      setNewTicketData(initialTicket)
+      loadTickets()
     } catch (error) {
       console.error("Erro ao criar ingressos:", error)
       alert('Erro ao criar ingressos')
@@ -212,10 +215,10 @@ export default function AdminTicketsPage() {
         ) : selectedEvent ? (
           <Tabs defaultValue="create">
             <TabsList>
+              <TabsTrigger value="stats">Estatísticas</TabsTrigger>
+              <TabsTrigger value="list">Listar Ingressos</TabsTrigger>
               <TabsTrigger value="create">Criar Ingressos</TabsTrigger>
               <TabsTrigger value="assign">Atribuir Ingressos</TabsTrigger>
-              <TabsTrigger value="list">Listar Ingressos</TabsTrigger>
-              <TabsTrigger value="stats">Estatísticas</TabsTrigger>
             </TabsList>
             
             <TabsContent value="create" className="space-y-4">
@@ -308,7 +311,15 @@ export default function AdminTicketsPage() {
                     </div>
                     
                     <div>
-                      <Label htmlFor="user-select">Selecione um Usuário</Label>
+                    <Label htmlFor="quantity">Email</Label>
+                      <Input 
+                        id="quantity" 
+                        type="email" 
+                        min="1" 
+                        value={assignTicketData.user_email} 
+                        onChange={(e) => setAssignTicketData(prev => ({ ...prev, user_email: e.target.value }))}
+                      />
+                      {/* <Label htmlFor="user-select">Selecione um Usuário</Label>
                       <Select 
                         value={assignTicketData.user_email} 
                         onValueChange={(value) => setAssignTicketData(prev => ({ ...prev, user_email: value }))}
@@ -323,7 +334,7 @@ export default function AdminTicketsPage() {
                             </SelectItem>
                           ))}
                         </SelectContent>
-                      </Select>
+                      </Select> */}
                     </div>
                     
                     <Button type="submit">Atribuir Ingresso</Button>
