@@ -10,7 +10,7 @@ const supabase = createClient(
 
 // Função para criar múltiplos tickets de uma vez
 export async function createTickets(
-  tickets: { event_id: string; ticket_type_id: string; status: 'available' | 'sold' | 'reserved'; user_email?: string | null; seat?: string | null }[]
+  tickets: { event_id: string; ticket_type_id: string; status: 'available' | 'sold' | 'reserved' | 'used'; user_email?: string | null; seat?: string | null }[]
 ): Promise<{ success: boolean; error?: any }> {
   try {
     const { error } = await supabase
@@ -64,7 +64,7 @@ export async function getEventTickets(eventId: string): Promise<Ticket[]> {
 }
 
 // Função para obter estatísticas de tickets por evento
-export async function getTicketStats(eventId: string): Promise<{ available: number; sold: number; reserved: number }> {
+export async function getTicketStats(eventId: string): Promise<{ available: number; sold: number; reserved: number; used: number }> {
   try {
     const { data, error } = await supabase
       .from('tickets')
@@ -76,7 +76,8 @@ export async function getTicketStats(eventId: string): Promise<{ available: numb
     const stats = {
       available: 0,
       sold: 0,
-      reserved: 0
+      reserved: 0,
+      used: 0
     }
 
     data?.forEach(ticket => {
@@ -88,14 +89,14 @@ export async function getTicketStats(eventId: string): Promise<{ available: numb
     return stats
   } catch (error) {
     console.error('Erro ao obter estatísticas de tickets:', error)
-    return { available: 0, sold: 0, reserved: 0 }
+    return { available: 0, sold: 0, reserved: 0, used: 0  }
   }
 }
 
 // Função para atualizar o status de um ticket
 export async function updateTicketStatus(
   ticketId: string,
-  status: 'available' | 'sold' | 'reserved'
+  status: 'available' | 'sold' | 'reserved' | 'used'
 ): Promise<{ success: boolean; error?: any }> {
   try {
     const { error } = await supabase

@@ -17,7 +17,7 @@ const initialTicket = {
         event_id: '',
         ticket_type_id: '',
         quantity: 1,
-        status: 'available' as 'available' | 'sold' | 'reserved'
+        status: 'available' as 'available' | 'sold' | 'reserved' | 'used'
 }
 
 export default function AdminTicketsPage() {
@@ -25,7 +25,7 @@ export default function AdminTicketsPage() {
   const [mounted, setMounted] = useState(false)
   
   const [events, setEvents] = useState<Event[]>([])
-  const [selectedEvent, setSelectedEvent] = useState<string>('')
+  const [selectedEvent, setSelectedEvent] = useState<string>('7afe7c11-8a73-477b-acc0-cb8670087cdc')
   const [ticketTypes, setTicketTypes] = useState<TicketType[]>([])
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [users, setUsers] = useState<User[]>([])
@@ -33,7 +33,8 @@ export default function AdminTicketsPage() {
   const [ticketStats, setTicketStats] = useState({
     available: 0,
     sold: 0,
-    reserved: 0
+    reserved: 0,
+    used: 0
   })
   
   const [newTicketData, setNewTicketData] = useState(initialTicket)
@@ -163,7 +164,7 @@ export default function AdminTicketsPage() {
     }
   }, [assignTicketData])
 
-  const handleStatusChange = useCallback(async (ticketId: string, newStatus: 'available' | 'sold' | 'reserved') => {
+  const handleStatusChange = useCallback(async (ticketId: string, newStatus: 'available' | 'sold' | 'reserved' | 'used') => {
     try {
       const result = await updateTicketStatus(ticketId, newStatus)
       if (!result.success) throw result.error
@@ -213,7 +214,7 @@ export default function AdminTicketsPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : selectedEvent ? (
-          <Tabs defaultValue="create">
+          <Tabs defaultValue="stats">
             <TabsList>
               <TabsTrigger value="stats">Estatísticas</TabsTrigger>
               <TabsTrigger value="list">Listar Ingressos</TabsTrigger>
@@ -378,7 +379,7 @@ export default function AdminTicketsPage() {
                             <td className="py-2 px-4">
                               <Select 
                                 value={ticket.status} 
-                                onValueChange={(value: 'available' | 'sold' | 'reserved') => handleStatusChange(ticket.id, value)}
+                                onValueChange={(value: 'available' | 'sold' | 'reserved' | 'used') => handleStatusChange(ticket.id, value)}
                               >
                                 <SelectTrigger className="w-[130px]">
                                   <SelectValue />
@@ -387,6 +388,7 @@ export default function AdminTicketsPage() {
                                   <SelectItem value="available">Disponível</SelectItem>
                                   <SelectItem value="reserved">Reservado</SelectItem>
                                   <SelectItem value="sold">Vendido</SelectItem>
+                                  <SelectItem value="used">Reservado</SelectItem>
                                 </SelectContent>
                               </Select>
                             </td>
@@ -425,6 +427,14 @@ export default function AdminTicketsPage() {
                   </CardHeader>
                   <CardContent className="pt-6">
                     <p className="text-4xl font-bold">{ticketStats.sold}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="bg-blue-50">
+                    <CardTitle>Validado</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <p className="text-4xl font-bold">{ticketStats.used}</p>
                   </CardContent>
                 </Card>
               </div>
