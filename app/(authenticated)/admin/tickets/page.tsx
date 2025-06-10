@@ -20,6 +20,18 @@ const initialTicket = {
         status: 'available' as 'available' | 'sold' | 'reserved' | 'used'
 }
 
+const getStatus = ( data: string) => {
+  const status = ['available', 'sold', 'reserved', 'used']
+  const statusText = ['Disponível', 'Vendido', 'Reservado', 'Usado']
+  const statusColor = ['bg-green-100 text-green-800', 'bg-red-100 text-red-800', 'bg-yellow-100 text-yellow-800', 'bg-gray-100 text-gray-800']
+  const mappedStatus = status.map((status, index) => ({
+    value: status,
+    text: statusText[index],
+    color: statusColor[index]
+  }))
+  return mappedStatus.find((item) => item.value === data)
+}
+
 export default function AdminTicketsPage() {
   // Estado para controlar a montagem do componente no cliente
   const [mounted, setMounted] = useState(false)
@@ -320,22 +332,6 @@ export default function AdminTicketsPage() {
                         value={assignTicketData.user_email} 
                         onChange={(e) => setAssignTicketData(prev => ({ ...prev, user_email: e.target.value }))}
                       />
-                      {/* <Label htmlFor="user-select">Selecione um Usuário</Label>
-                      <Select 
-                        value={assignTicketData.user_email} 
-                        onValueChange={(value) => setAssignTicketData(prev => ({ ...prev, user_email: value }))}
-                      >
-                        <SelectTrigger id="user-select">
-                          <SelectValue placeholder="Selecione um usuário" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {users.map((user) => (
-                            <SelectItem key={user.id} value={user.email}>
-                              {user.name} ({user.email})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select> */}
                     </div>
                     
                     <Button type="submit">Atribuir Ingresso</Button>
@@ -359,7 +355,6 @@ export default function AdminTicketsPage() {
                           <th className="py-2 px-4 text-left">Preço</th>
                           <th className="py-2 px-4 text-left">Status</th>
                           <th className="py-2 px-4 text-left">Usuário</th>
-                          <th className="py-2 px-4 text-left">Ações</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -371,27 +366,11 @@ export default function AdminTicketsPage() {
                               {ticket.ticket_type ? `R$ ${ticket.ticket_type.price.toFixed(2)}` : 'N/A'}
                             </td>
                             <td className="py-2 px-4">
-                              <span className={`inline-block px-2 py-1 rounded-full text-xs ${ticket.status === 'available' ? 'bg-green-100 text-green-800' : ticket.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}`}>
-                                {ticket.status === 'available' ? 'Disponível' : ticket.status === 'reserved' ? 'Reservado' : 'Vendido'}
+                              <span className={`inline-block px-2 py-1 rounded-full text-xs ${getStatus(ticket.status)?.color}`}>
+                                {getStatus(ticket.status)?.text}
                               </span>
                             </td>
                             <td className="py-2 px-4">{ticket.user_email || 'N/A'}</td>
-                            <td className="py-2 px-4">
-                              <Select 
-                                value={ticket.status} 
-                                onValueChange={(value: 'available' | 'sold' | 'reserved' | 'used') => handleStatusChange(ticket.id, value)}
-                              >
-                                <SelectTrigger className="w-[130px]">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="available">Disponível</SelectItem>
-                                  <SelectItem value="reserved">Reservado</SelectItem>
-                                  <SelectItem value="sold">Vendido</SelectItem>
-                                  <SelectItem value="used">Reservado</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </td>
                           </tr>
                         ))}
                       </tbody>
