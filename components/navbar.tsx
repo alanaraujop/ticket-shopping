@@ -21,6 +21,7 @@ export function Navbar() {
   const adminLinks = [
     { href: '/admin/events', label: 'Gerenciar Eventos' },
     { href: '/admin/tickets', label: 'Gerenciar Ingressos' },
+    { href: '/admin/validate-ticket', label: 'Validar Ingressos' },
   ]
 
   return (

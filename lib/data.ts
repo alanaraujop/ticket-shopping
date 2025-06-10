@@ -27,7 +27,7 @@ export type Ticket = {
   user_email: string
   ticket_type_id: string
   seat: string | null
-  status: 'available' | 'sold' | 'reserved'
+  status: 'available' | 'sold' | 'reserved' | 'used'
   created_at: string
   updated_at: string
   event?: Event
