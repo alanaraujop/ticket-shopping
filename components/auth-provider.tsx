@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isLoading && !user && !publicRoutes.includes(pathname)) {
       router.push('/login')
     }
-    if (!isLoading && user && publicRoutes.includes(pathname)) {
+    if (!isLoading && user && ['/login'].includes(pathname)) {
       router.push('/tickets')
     }
   }, [user, isLoading, pathname, router])

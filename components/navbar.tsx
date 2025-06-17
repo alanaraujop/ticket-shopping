@@ -57,9 +57,6 @@ export function Navbar() {
             {navLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
-            {/* {user?.email === 'alan.techsafe@gmail.com' && adminLinks.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} />
-            ))} */}
             {user?.profile === 'admin' && adminLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
