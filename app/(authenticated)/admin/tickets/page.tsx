@@ -12,6 +12,7 @@ import { getTicketTypes } from "@/app/actions/tickets"
 import { Event, Ticket, TicketType, User } from "@/lib/data"
 import { createTickets, assignTicketToUser, getEventTickets, getTicketStats, updateTicketStatus } from "@/app/actions/admin-tickets"
 import { getUsers, getEvents } from "@/app/actions/admin-users"
+import { generateTicketId } from "@/lib/utils"
 
 const initialTicket = {
         event_id: '',
@@ -134,6 +135,7 @@ export default function AdminTicketsPage() {
       }
 
       const ticketsToCreate = Array(quantity).fill(null).map(() => ({
+        id: generateTicketId(),
         event_id,
         ticket_type_id,
         status,

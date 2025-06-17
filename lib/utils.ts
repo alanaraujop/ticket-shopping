@@ -14,3 +14,15 @@ export function formatDate(dateString: string): string {
   })
 }
 
+export function generateTicketId(): string {
+  // Caracteres permitidos: números 0-9 e letras maiúsculas, excluindo I, O, Q, S, Z para evitar confusão
+  const chars = '0123456789ABCDEFGHJKLMNPRTUVWXY';
+  let result = '';
+  
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  return result;
+}
+

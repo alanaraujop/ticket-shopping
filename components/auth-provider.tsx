@@ -24,19 +24,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
 
-  useEffect( function () {
-    supabase.auth.updateUser({
-      data: {
-        profile: 'admin'
-    }}).then(({ data, error }) => {
-      // Trate os dados retornados ou erros aqui
-      if (error) {
-        console.error('Erro ao atualizar metadados:', error)
-      } else {
-        console.log('Metadados atualizados com sucesso:', data)
-      }
-    })
-  }, [])
+  // useEffect( function () {
+  //   supabase.auth.updateUser({
+  //     data: {
+  //       profile: 'admin'
+  //   }}).then(({ data, error }) => {
+  //     // Trate os dados retornados ou erros aqui
+  //     if (error) {
+  //       console.error('Erro ao atualizar metadados:', error)
+  //     } else {
+  //       console.log('Metadados atualizados com sucesso:', data)
+  //     }
+  //   })
+  // }, [])
 
   useEffect(() => {
     // Check for Supabase session

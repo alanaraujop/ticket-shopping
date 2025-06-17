@@ -6,12 +6,10 @@ import { useAuth } from './auth-provider'
 import { Menu } from 'lucide-react'
 import { Button } from './ui/button'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
-import { useIsMobile } from '@/hooks/use-mobile'
 
 export function Navbar() {
   const pathname = usePathname()
   const { user, logout } = useAuth()
-  const isMobile = useIsMobile()
 
   // Verifica se o usuário está na página de login
   if (pathname === '/login') return null
@@ -24,7 +22,7 @@ export function Navbar() {
 
   // Links de administração (apenas para administradores)
   const adminLinks = [
-    { href: '/admin/events', label: 'Gerenciar Eventos' },
+    // { href: '/admin/events', label: 'Gerenciar Eventos' },
     { href: '/admin/tickets', label: 'Gerenciar Ingressos' },
     { href: '/admin/validate-ticket', label: 'Validar Ingressos' },
   ]
@@ -59,12 +57,12 @@ export function Navbar() {
             {navLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
-            {user?.email === 'alan.techsafe@gmail.com' && adminLinks.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} />
-            ))}
-            {/* {user?.profile === 'admin' && adminLinks.map((link) => (
+            {/* {user?.email === 'alan.techsafe@gmail.com' && adminLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))} */}
+            {user?.profile === 'admin' && adminLinks.map((link) => (
+              <NavLink key={link.href} href={link.href} label={link.label} />
+            ))}
           </nav>
         </div>
         
