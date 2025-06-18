@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/utils"
 import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react"
 import QRCode from "react-qr-code"
 import { getTicketById } from "@/app/actions/tickets"
+import { Badge } from "@/components/ui/badge"; // Adicionar esta linha
 
 export default function TicketDetailsPage({ params }: { params: { id: string } }) {
   const [ticket, setTicket] = useState<Ticket | null>(null)
@@ -109,7 +110,7 @@ export default function TicketDetailsPage({ params }: { params: { id: string } }
           </CardContent>
         </Card>
 
-        <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-card">
+        <div className={`flex flex-col items-center justify-center p-6 border rounded-lg bg-card ${ticket.status === 'used' ? 'bg-red-100 border-red-400' : ''}`}> {/* Adicionar classe condicional */}
           <h3 className="text-xl font-bold mb-2">QR Code do Ingresso</h3>
           <p className="text-muted-foreground mb-6 text-center">Apresente este QR code na entrada do evento</p>
 
@@ -118,6 +119,9 @@ export default function TicketDetailsPage({ params }: { params: { id: string } }
           </div>
 
           <p className="mt-6 text-sm text-center text-muted-foreground">ID do ingresso: {ticket.id}</p>
+          {ticket.status === 'used' && (
+            <Badge variant="destructive" className="mt-2">Usado</Badge> // Adicionar o chip
+          )}
         </div>
       </div>
     </div>
