@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getEvents, getTicketTypes } from "../../actions/tickets";
+import { Navbar } from "@/components/navbar";
 
 interface EventDetailPageProps {
   params: { id: string }
@@ -15,6 +16,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const ticketTypes = await getTicketTypes(event.id);
 
   return (
+    <div className="min-h-screen">
+      <Navbar />
     <div className="max-w-2xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold mb-4 text-center">{event.name}</h1>
       {event.image_url && (
@@ -30,7 +33,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           {ticketTypes.map(type => (
             <li key={type.id} className="flex justify-between items-center bg-muted rounded px-4 py-2">
               <span>{type.name}</span>
-              <span className="font-bold text-primary">R$ {type.price.toFixed(2)}</span>
+              <span className="font-bold text-primary">R$ {type.price.toFixed(2).replace('.', ',')}</span>
             </li>
           ))}
         </ul>
@@ -54,6 +57,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           <a href={event.facebook_url} target="_blank" rel="noopener noreferrer" className="text-primary underline">Facebook</a>
         )}
       </div>
+    </div>
     </div>
   );
 }

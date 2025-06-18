@@ -41,7 +41,6 @@ export default function AdminTicketsPage() {
   const [selectedEvent, setSelectedEvent] = useState<string>('7afe7c11-8a73-477b-acc0-cb8670087cdc')
   const [ticketTypes, setTicketTypes] = useState<TicketType[]>([])
   const [tickets, setTickets] = useState<Ticket[]>([])
-  const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [ticketStats, setTicketStats] = useState({
     available: 0,
@@ -70,21 +69,13 @@ export default function AdminTicketsPage() {
       try {
         const eventsData = await getEvents()
         setEvents(eventsData)
+        setNewTicketData(prev => ({ ...prev, event_id: eventsData[0].id }))
       } catch (error) {
         console.error("Erro ao carregar eventos:", error)
       }
     }
 
-    const loadUsers = async () => {
-      try {
-        const usersData = await getUsers()
-        setUsers(usersData || [])
-      } catch (error) {
-        console.error("Erro ao carregar usuários:", error)
-      }
-    }
-
-    Promise.all([loadEvents(), loadUsers()])
+    Promise.all([loadEvents()])
       .finally(() => setLoading(false))
   }, [mounted])
 
@@ -115,7 +106,6 @@ export default function AdminTicketsPage() {
       // Usar a função do servidor para obter os tickets
       const ticketsData = await getEventTickets(selectedEvent)
       setTickets(ticketsData)
-
       // Obter estatísticas
       const stats = await getTicketStats(selectedEvent)
       setTicketStats(stats)
@@ -128,7 +118,7 @@ export default function AdminTicketsPage() {
     e.preventDefault()
     try {
       const { event_id, ticket_type_id, quantity, status } = newTicketData
-      
+      console.log(newTicketData)
       if (!event_id || !ticket_type_id || quantity < 1) {
         alert('Preencha todos os campos corretamente')
         return
@@ -148,7 +138,7 @@ export default function AdminTicketsPage() {
       if (!result.success) throw result.error
       
       alert(`${quantity} ingressos criados com sucesso!`)
-      setNewTicketData(initialTicket)
+      // setNewTicketData(initialTicket)
       loadTickets()
     } catch (error) {
       console.error("Erro ao criar ingressos:", error)

@@ -23,6 +23,7 @@ export default function TicketDetailsPage({ params }: { params: { id: string } }
         // Simular delay de rede
         await new Promise((resolve) => setTimeout(resolve, 800))
         const ticketData = await getTicketById(params.id)
+        console.log(ticketData)
         setTicket(ticketData)
         if (!ticketData) {
           router.push("/tickets")
@@ -103,10 +104,6 @@ export default function TicketDetailsPage({ params }: { params: { id: string } }
               <div>
                 <p className="text-muted-foreground">Setor</p>
                 <p className="font-medium">{ticket.ticket_type?.name}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Assento</p>
-                <p className="font-medium">{ticket.seat}</p>
               </div>
             </div>
           </CardContent>

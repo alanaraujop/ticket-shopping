@@ -20,7 +20,7 @@ export default async function Home() {
               <h2 className="text-xl font-semibold mb-2 text-center">{event.name}</h2>
               <p className="text-muted-foreground mb-1">{event.date} às {event.time}</p>
               <p className="text-muted-foreground mb-2">{event.venue}</p>
-              <Link href={`/events/${event.id}`} className="mt-2 w-full">
+              <Link href={`/eventos/${event.id}`} className="mt-2 w-full">
                 <button className="w-full bg-primary text-white py-2 rounded hover:bg-primary/90 transition font-medium text-lg">
                   Quero garantir meu ingresso!
                 </button>
