@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge' // Adicionar esta linha
 import { Ticket } from '@/lib/data'
 import { validateTicket } from '@/app/actions/ticket-validation'
 import { CheckCircle, XCircle, QrCode, Loader2 } from 'lucide-react'
@@ -172,7 +173,7 @@ export default function ValidateTicketPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className={validationResult?.ticket?.status === 'used' ? 'bg-red-100 border-red-400' : ''}> {/* Adicionar classe condicional */}
             <CardHeader>
               <CardTitle>Resultado da Validação</CardTitle>
               <CardDescription>
@@ -210,8 +211,17 @@ export default function ValidateTicketPage() {
                       <div>
                         <span className="font-semibold">Usuário:</span> {validationResult.ticket.user_email}
                       </div>
-                      <div>
-                        <span className="font-semibold">Status:</span> {validationResult.success ? 'Utilizado' : validationResult.ticket.status}
+                      <div className="flex items-center space-x-2"> {/* Adicionar flexbox para alinhar status e chip */}
+                        <span className="font-semibold">Status:</span> 
+                        {validationResult.ticket.status === 'used' && (
+                          <Badge variant="destructive">Utilizado</Badge> // Adicionar o chip
+                        ) }
+                        { validationResult.ticket.status === 'sold' && (
+                          <Badge variant="default">Ok</Badge> 
+                        )}
+                         { validationResult.ticket.status === 'available' && (
+                          <Badge variant="secondary">Inválido</Badge> 
+                        )}
                       </div>
                     </div>
                   )}

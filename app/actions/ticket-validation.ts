@@ -44,6 +44,15 @@ export async function validateTicket(ticketId: string): Promise<{
       }
     }
 
+    // Verifica se o ticket já foi utilizado
+    if (ticket.status === 'available' || 'reserved') {
+      return { 
+        success: false, 
+        ticket, 
+        message: 'Este ingresso não foi vendido' 
+      }
+    }
+
     // Se o ticket não foi utilizado, atualiza o status para 'used'
     const { error: updateError } = await supabase
       .from('tickets')
