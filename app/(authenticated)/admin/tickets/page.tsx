@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { getTicketTypes } from "@/app/actions/tickets"
 import { Event, Ticket, TicketType, User } from "@/lib/data"
 import { createTickets, assignTicketToUser, getEventTickets, getTicketStats, updateTicketStatus } from "@/app/actions/admin-tickets"
@@ -54,6 +54,9 @@ export default function AdminTicketsPage() {
   })
   
   const [newTicketData, setNewTicketData] = useState(initialTicket)
+  const [filterStatus, setFilterStatus] = useState<string>('all')
+  const [sortKey, setSortKey] = useState<string>('created_at')
+  const [sortOrder, setSortOrder] = useState<string>('desc')
 
   const [assignTicketData, setAssignTicketData] = useState({
     ticket_id: '',
@@ -103,8 +106,10 @@ export default function AdminTicketsPage() {
       console.error("Erro ao carregar tipos de ingressos:", error)
     }
   }, [selectedEvent])
+  console.log(filterStatus)
 
   const loadTickets = useCallback(async () => {
+    console.log(filterStatus)
     if (!selectedEvent) return
     try {
       // Usar a função do servidor para obter os tickets
@@ -117,6 +122,32 @@ export default function AdminTicketsPage() {
       console.error("Erro ao carregar ingressos:", error)
     }
   }, [selectedEvent])
+
+  const filteredTickets = useMemo(() => {
+    let ticketsData = tickets.slice();
+    // Aplicar filtro por status
+    if (filterStatus !== 'all') {
+      ticketsData = ticketsData.filter(ticket => ticket.status === filterStatus)
+    }
+
+    // Aplicar ordenação
+    ticketsData.sort((a, b) => {
+      let valA: any, valB: any;
+
+      if (sortKey === 'created_at') {
+        valA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        valB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      } else if (sortKey === 'user_email') {
+        valA = a.user_email || '';
+        valB = b.user_email || '';
+      }
+
+      if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return ticketsData
+  }, [tickets, filterStatus, sortKey, sortOrder])
 
   const handleCreateTickets = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
@@ -363,6 +394,59 @@ export default function AdminTicketsPage() {
                   <CardTitle>Lista de Ingressos</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="flex space-x-4 mb-4">
+                    <div>
+                      <Label htmlFor="filter-status">Filtrar por Status</Label>
+                      <Select
+                        value={filterStatus}
+                        onValueChange={(value) => {
+                          console.log(value)
+                          setFilterStatus(value)
+                        }}
+                      >
+                        <SelectTrigger id="filter-status" className="w-[180px]">
+                          <SelectValue placeholder="Todos" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos</SelectItem>
+                          <SelectItem value="available">Disponível</SelectItem>
+                          <SelectItem value="sold">Vendido</SelectItem>
+                          <SelectItem value="reserved">Reservado</SelectItem>
+                          <SelectItem value="used">Usado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="sort-key">Ordenar por</Label>
+                      <Select
+                        value={sortKey}
+                        onValueChange={(value) => setSortKey(value)}
+                      >
+                        <SelectTrigger id="sort-key" className="w-[180px]">
+                          <SelectValue placeholder="Data de Criação" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="created_at">Data de Criação</SelectItem>
+                          <SelectItem value="user_email">Email do Usuário</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="sort-order">Ordem</Label>
+                      <Select
+                        value={sortOrder}
+                        onValueChange={(value) => setSortOrder(value)}
+                      >
+                        <SelectTrigger id="sort-order" className="w-[180px]">
+                          <SelectValue placeholder="Decrescente" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="asc">Crescente</SelectItem>
+                          <SelectItem value="desc">Decrescente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                       <thead>
@@ -375,7 +459,7 @@ export default function AdminTicketsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {tickets.map((ticket) => (
+                        {filteredTickets.map((ticket) => (
                           <tr key={ticket.id} className="border-b hover:bg-muted/50">
                             <td className="py-2 px-4">{ticket.id.substring(0, 8)}</td>
                             <td className="py-2 px-4">{ticket.ticket_type?.name || 'N/A'}</td>
