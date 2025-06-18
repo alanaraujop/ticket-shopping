@@ -13,6 +13,10 @@ import { Event, Ticket, TicketType, User } from "@/lib/data"
 import { createTickets, assignTicketToUser, getEventTickets, getTicketStats, updateTicketStatus } from "@/app/actions/admin-tickets"
 import { getUsers, getEvents } from "@/app/actions/admin-users"
 import { generateTicketId } from "@/lib/utils"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 const initialTicket = {
         event_id: '',
@@ -161,23 +165,13 @@ export default function AdminTicketsPage() {
       if (!result.success) throw result.error
       
       alert('Ingresso atribuído com sucesso!')
-    //   loadTickets()
+      setAssignTicketData({ ticket_id: '', user_email: '' })
+      loadTickets()
     } catch (error) {
       console.error("Erro ao atribuir ingresso:", error)
       alert('Erro ao atribuir ingresso')
     }
   }, [assignTicketData])
-
-  const handleStatusChange = useCallback(async (ticketId: string, newStatus: 'available' | 'sold' | 'reserved' | 'used') => {
-    try {
-      const result = await updateTicketStatus(ticketId, newStatus)
-      if (!result.success) throw result.error
-    //   loadTickets()
-    } catch (error) {
-      console.error("Erro ao atualizar status do ingresso:", error)
-      alert('Erro ao atualizar status do ingresso')
-    }
-  }, [])
 
   // Se o componente não estiver montado no cliente, renderiza um placeholder
   if (!mounted) {
@@ -296,23 +290,54 @@ export default function AdminTicketsPage() {
                   <form onSubmit={handleAssignTicket} className="space-y-4">
                     <div>
                       <Label htmlFor="ticket-select">Selecione um Ingresso</Label>
-                      <Select 
-                        value={assignTicketData.ticket_id} 
-                        onValueChange={(value) => setAssignTicketData(prev => ({ ...prev, ticket_id: value }))}
-                      >
-                        <SelectTrigger id="ticket-select">
-                          <SelectValue placeholder="Selecione um ingresso" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {tickets
-                            .filter(ticket => ticket.status === 'available')
-                            .map((ticket) => (
-                              <SelectItem key={ticket.id} value={ticket.id}>
-                                {ticket.ticket_type?.name || 'Ingresso'} - ID: {ticket.id.substring(0, 8)}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className="w-full justify-between"
+                          >
+                            {assignTicketData.ticket_id
+                              ? tickets.find(
+                                  (ticket) => ticket.id === assignTicketData.ticket_id
+                                )?.id
+                              : "Selecione um ingresso..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                          <Command>
+                            <CommandInput placeholder="Buscar ingresso..." />
+                            <CommandEmpty>Nenhum ingresso encontrado.</CommandEmpty>
+                            <CommandList>
+                              <CommandGroup>
+                                {tickets
+                                  .filter(ticket => ticket.status === 'available')
+                                  .map((ticket) => (
+                                    <CommandItem
+                                      key={ticket.id}
+                                      value={ticket.id}
+                                      onSelect={(currentValue) => {
+                                        setAssignTicketData(prev => ({ ...prev, ticket_id: currentValue === assignTicketData.ticket_id ? "" : currentValue }))
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          assignTicketData.ticket_id === ticket.id
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {ticket.ticket_type?.name || 'Ingresso'} - ID: {ticket.id.substring(0, 8)}
+                                    </CommandItem>
+                                  ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+
                     </div>
                     
                     <div>
