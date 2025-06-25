@@ -14,6 +14,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
     return <div className="max-w-xl mx-auto py-10 px-4 text-center">Evento não encontrado.</div>;
   }
   const ticketTypes = await getTicketTypes(event.id);
+  const ticketTypeWithoutFree = ticketTypes.filter(type => type.price);
 
   return (
     <div className="min-h-screen">
@@ -21,7 +22,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
     <div className="max-w-2xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold mb-4 text-center">{event.name}</h1>
       {event.image_url && (
-        <Image src={event.image_url} alt={event.name} width={600} height={300} className="rounded mb-6 object-cover w-full h-64" />
+        <Image src={event.image_url} alt={event.name} width={600} height={450} className="rounded mb-6 object-cover w-full h-96" />
       )}
       <div className="mb-4 text-center">
         <p className="text-muted-foreground">{event.date} às {event.time}</p>
@@ -30,7 +31,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Tipos de Ingresso</h2>
         <ul className="space-y-2">
-          {ticketTypes.map(type => (
+          {ticketTypeWithoutFree.map(type => (
             <li key={type.id} className="flex justify-between items-center bg-muted rounded px-4 py-2">
               <span>{type.name}</span>
               <span className="font-bold text-primary">R$ {type.price.toFixed(2).replace('.', ',')}</span>
