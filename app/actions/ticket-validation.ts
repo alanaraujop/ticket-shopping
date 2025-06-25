@@ -44,12 +44,21 @@ export async function validateTicket(ticketId: string): Promise<{
       }
     }
 
-    // Verifica se o ticket já foi utilizado
-    if (ticket.status === 'available' || 'reserved') {
+    // Verifica se o ticket ainda nao foi vendido
+    if (ticket.status === 'available') {
       return { 
         success: false, 
         ticket, 
         message: 'Este ingresso não foi vendido' 
+      }
+    }
+   
+    // Verifica se o ticket está com pagamento pendente
+    if (ticket.status === 'reserved') {
+      return { 
+        success: false, 
+        ticket, 
+        message: 'Pagamento pendente' 
       }
     }
 

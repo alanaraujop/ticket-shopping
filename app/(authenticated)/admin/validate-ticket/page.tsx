@@ -60,15 +60,15 @@ export default function ValidateTicketPage() {
       const data = detectedCodes[0].rawValue;
       
       // Verifica se o QR code contém o prefixo "TICKET:"
-      if (data.startsWith("TICKET:") && data.endsWith(":Beto William:2024-03-22")) {
-        const ticketIdToValidate = data.replace(":Beto William:2024-03-22", "").replace("TICKET:","")
-        setTicketId(ticketIdToValidate);
+      // if (data.startsWith("TICKET:") && data.endsWith(":Beto William:2024-03-22")) {
+      //   const ticketIdToValidate = data.replace(":Beto William:2024-03-22", "").replace("TICKET:","")
+        setTicketId(data);
         setShowScanner(false);
         
         // Validar o ticket automaticamente após a leitura
         setLoading(true);
         try {
-          const result = await validateTicket(ticketIdToValidate);
+          const result = await validateTicket(data);
           setValidationResult({
             success: result.success,
             ticket: result.ticket,
@@ -83,11 +83,11 @@ export default function ValidateTicketPage() {
         } finally {
           setLoading(false);
         }
-      } else {
-        // Se não tiver o prefixo, tenta ler novamente
-        console.log("QR code não contém o prefixo TICKET:. Tente novamente.");
-        return;
-      }
+      // } else {
+      //   // Se não tiver o prefixo, tenta ler novamente
+      //   console.log("QR code não contém o prefixo TICKET:. Tente novamente.");
+      //   return;
+      // }
     }
   }, [loading])
   // Função para lidar com erros do scanner
