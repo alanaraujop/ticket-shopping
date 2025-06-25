@@ -55,8 +55,34 @@ export default function TicketsPage() {
       <h1 className="text-2xl font-bold">Meus Ingressos</h1>
 
       {tickets.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Você não possui ingressos no momento.</p>
+        <div className="py-8">
+          <p className="text-muted-foreground text-center mb-8">Você não possui ingressos no momento.</p>
+          
+          <div className="space-y-8">
+            <div className="border rounded-lg p-6 bg-card">
+              <h2 className="text-xl font-semibold mb-4">Venda Presencial</h2>
+              <p className="mb-2">Arena Cultural Abelardo Barbosa</p>
+              <p className="text-muted-foreground">R. Sd. Elizeu Hipólito, s/n - Pedra de Guaratiba, Rio de Janeiro</p>
+            </div>
+            
+            <div className="border rounded-lg p-6 bg-card">
+              <h2 className="text-xl font-semibold mb-4">Venda Online</h2>
+              <p className="mb-2">Mande um direct para o Instagram <a href="https://www.instagram.com/arenachacrinha/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@arenachacrinha</a> para mais informações</p>
+              <a 
+                href="https://www.instagram.com/arenachacrinha/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 mt-4 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors w-fit"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                Acessar Instagram
+              </a>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
