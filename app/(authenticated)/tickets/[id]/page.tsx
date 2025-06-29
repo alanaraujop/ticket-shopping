@@ -115,7 +115,7 @@ export default function TicketDetailsPage({ params }: { params: { id: string } }
           <p className="text-muted-foreground mb-6 text-center">Apresente este QR code na entrada do evento</p>
 
           <div className="bg-white p-4 rounded-lg">
-            <QRCode value={`TICKET:${ticket.id}:${ticket.event?.name}:${ticket.event?.date}`} size={200} />
+            <QRCode value={ticket.id} size={200} />
           </div>
 
           <p className="mt-6 text-sm text-center text-muted-foreground">ID do ingresso: {ticket.id}</p>
