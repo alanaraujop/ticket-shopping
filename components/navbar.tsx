@@ -57,7 +57,7 @@ export function Navbar() {
             {navLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
-            {user?.profile === 'admin' || user?.email === "bertinebia19@gmail.com" && adminLinks.map((link) => (
+            {user?.profile === 'admin' && adminLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
           </nav>
