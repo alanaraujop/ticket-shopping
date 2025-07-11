@@ -7,12 +7,15 @@ import { Menu } from 'lucide-react'
 import { Button } from './ui/button'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
+const emailsAdmin = ['adriana.batista0602@gmail.com', 'kauane.gama1608@gmail.com']
 export function Navbar() {
   const pathname = usePathname()
   const { user, logout } = useAuth()
 
   // Verifica se o usuário está na página de login
   if (pathname === '/login') return null
+
+  const isAdmin = user?.profile === 'admin' || emailsAdmin.includes(user?.email || '')
 
   // Links de navegação
   const navLinks = [
@@ -57,7 +60,7 @@ export function Navbar() {
             {navLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
-            {user?.profile === 'admin' && adminLinks.map((link) => (
+            {isAdmin && adminLinks.map((link) => (
               <NavLink key={link.href} href={link.href} label={link.label} />
             ))}
           </nav>
@@ -78,7 +81,7 @@ export function Navbar() {
                   {navLinks.map((link) => (
                     <NavLink key={link.href} href={link.href} label={link.label} />
                   ))}
-                  {user?.profile === 'admin' || user?.email === "bertinebia19@gmail.com" && adminLinks.map((link) => (
+                  {isAdmin && adminLinks.map((link) => (
                     <NavLink key={link.href} href={link.href} label={link.label} />
                   ))}
                 </div>
