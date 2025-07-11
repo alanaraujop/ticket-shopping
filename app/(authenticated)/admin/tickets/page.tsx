@@ -10,12 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { getTicketTypes } from "@/app/actions/tickets"
 import { Event, Ticket, TicketType, User } from "@/lib/data"
-import { createTickets, assignTicketToUser, getEventTickets, getTicketStats, updateTicketStatus } from "@/app/actions/admin-tickets"
+import { createTickets, getEventTickets, getTicketStats, updateTicketStatus } from "@/app/actions/admin-tickets"
 import { getUsers, getEvents } from "@/app/actions/admin-users"
 import { generateTicketId } from "@/lib/utils"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Check, ChevronsUpDown } from "lucide-react"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 const initialTicket = {
@@ -57,11 +55,6 @@ export default function AdminTicketsPage() {
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [sortKey, setSortKey] = useState<string>('created_at')
   const [sortOrder, setSortOrder] = useState<string>('desc')
-
-  const [assignTicketData, setAssignTicketData] = useState({
-    ticket_id: '',
-    user_email: ''
-  })
 
   // Efeito para marcar o componente como montado no cliente
   useEffect(() => {
@@ -181,29 +174,6 @@ export default function AdminTicketsPage() {
     }
   }, [newTicketData])
 
-  const handleAssignTicket = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const { ticket_id, user_email } = assignTicketData
-      
-      if (!ticket_id || !user_email) {
-        alert('Selecione um ingresso e um usuário')
-        return
-      }
-
-      const result = await assignTicketToUser(ticket_id, user_email)
-
-      if (!result.success) throw result.error
-      
-      alert('Ingresso atribuído com sucesso!')
-      setAssignTicketData({ ticket_id: '', user_email: '' })
-      loadTickets()
-    } catch (error) {
-      console.error("Erro ao atribuir ingresso:", error)
-      alert('Erro ao atribuir ingresso')
-    }
-  }, [assignTicketData])
-
   // Se o componente não estiver montado no cliente, renderiza um placeholder
   if (!mounted) {
     return <div className="min-h-screen"></div> // Placeholder vazio com altura mínima
@@ -212,7 +182,12 @@ export default function AdminTicketsPage() {
   return (
     <AdminGuard>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Gerenciamento de Ingressos</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Gerenciamento de Ingressos</h1>
+          <Link href="/admin/sell-ticket">
+            <Button variant="default">Vender Ingresso</Button>
+          </Link>
+        </div>
         
         <div className="flex items-center space-x-4">
           <div className="w-1/3">
@@ -248,7 +223,6 @@ export default function AdminTicketsPage() {
               <TabsTrigger value="stats">Estatísticas</TabsTrigger>
               <TabsTrigger value="list">Listar Ingressos</TabsTrigger>
               <TabsTrigger value="create">Criar Ingressos</TabsTrigger>
-              <TabsTrigger value="assign">Atribuir Ingressos</TabsTrigger>
             </TabsList>
             
             <TabsContent value="create" className="space-y-4">
@@ -307,82 +281,6 @@ export default function AdminTicketsPage() {
                     </div>
                     
                     <Button type="submit">Criar Ingressos</Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="assign" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Atribuir Ingresso a Usuário</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleAssignTicket} className="space-y-4">
-                    <div>
-                      <Label htmlFor="ticket-select">Selecione um Ingresso</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className="w-full justify-between"
-                          >
-                            {assignTicketData.ticket_id
-                              ? tickets.find(
-                                  (ticket) => ticket.id === assignTicketData.ticket_id
-                                )?.id
-                              : "Selecione um ingresso..."}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                          <Command>
-                            <CommandInput placeholder="Buscar ingresso..." />
-                            <CommandEmpty>Nenhum ingresso encontrado.</CommandEmpty>
-                            <CommandList>
-                              <CommandGroup>
-                                {tickets
-                                  .filter(ticket => ticket.status === 'available')
-                                  .map((ticket) => (
-                                    <CommandItem
-                                      key={ticket.id}
-                                      value={ticket.id}
-                                      onSelect={(currentValue) => {
-                                        setAssignTicketData(prev => ({ ...prev, ticket_id: currentValue === assignTicketData.ticket_id ? "" : currentValue }))
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          assignTicketData.ticket_id === ticket.id
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {ticket.ticket_type?.name || 'Ingresso'} - ID: {ticket.id.substring(0, 8)}
-                                    </CommandItem>
-                                  ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-
-                    </div>
-                    
-                    <div>
-                    <Label htmlFor="quantity">Email</Label>
-                      <Input 
-                        id="quantity" 
-                        type="email" 
-                        min="1" 
-                        value={assignTicketData.user_email} 
-                        onChange={(e) => setAssignTicketData(prev => ({ ...prev, user_email: e.target.value }))}
-                      />
-                    </div>
-                    
-                    <Button type="submit">Atribuir Ingresso</Button>
                   </form>
                 </CardContent>
               </Card>
