@@ -29,6 +29,7 @@ export function Navbar() {
     { href: '/admin/tickets', label: 'Gerenciar Ingressos' },
     { href: '/admin/validate-ticket', label: 'Validar Ingressos' },
     { href: '/admin/sell-ticket', label: 'Vender Ingressos' },
+    { href: '/admin/sell-fysical-ticket', label: 'Venda Local' },
   ]
 
   // Componente de link de navegação para reutilização
