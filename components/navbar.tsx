@@ -7,7 +7,7 @@ import { Menu } from 'lucide-react'
 import { Button } from './ui/button'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
-const emailsAdmin = ['adriana.batista0602@gmail.com', 'kauane.gama1608@gmail.com']
+const emailsAdmin = ['adriana.batista0602@gmail.com', 'kauane.gama1608@gmail.com', 'stephaniemello60@gmail.com']
 export function Navbar() {
   const pathname = usePathname()
   const { user, logout } = useAuth()

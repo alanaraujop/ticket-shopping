@@ -4,7 +4,7 @@ import { useAuth } from "@/components/auth-provider"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-const emailsAdmin = ['adriana.batista0602@gmail.com', 'kauane.gama1608@gmail.com']
+const emailsAdmin = ['adriana.batista0602@gmail.com', 'kauane.gama1608@gmail.com', 'stephaniemello60@gmail.com']
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
